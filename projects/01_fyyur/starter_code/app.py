@@ -47,7 +47,7 @@ class Venue(db.Model):
     website = db.Column(db.String, nullable=True)
     seeking_talent = db.Column(db.Boolean, nullable=True, default=False)
     seeking_description = db.Column(db.String, nullable=True)
-    # past_shows = db.relationship('Shows', backref='Venue', lazy=True)
+    shows = db.relationship('Shows', backref='venue', lazy=True)
     # upcoming_shows = db.relationship('Shows', backref='Venue', lazy=True)
 
 
@@ -67,7 +67,7 @@ class Artist(db.Model):
     website = db.Column(db.String, nullable=True)
     seeking_venue = db.Column(db.Boolean, nullable=True, default=False)
     seeking_description = db.Column(db.String, nullable=True)
-    # past_shows = db.relationship('Shows', backref='Artist', lazy=True)
+    shows = db.relationship('Shows', backref='artist', lazy=True)
     # upcoming_shows = db.relationship('Shows', backref='Artist', lazy=True)
 
 class Shows(db.Model):
@@ -471,12 +471,39 @@ def edit_venue(venue_id):
     "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
   }
   # TODO: populate form with values from venue with ID <venue_id>
+  venue = Venue.query.get(venue_id)
   return render_template('forms/edit_venue.html', form=form, venue=venue)
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
   # TODO: take values from the form submitted, and update existing
   # venue record with ID <venue_id> using the new attributes
+  form = VenueForm(request.form)
+  valid = form.validate()
+  flash(form.data)
+  if valid:
+    try:
+      venue = Venue.query.get(venue_id)
+      venue.name = form.data['name']
+      venue.city = form.data['city']
+      venue.state = form.data['state']
+      venue.address = form.data['address']
+      venue.phone = form.data['phone']
+      venue.genres = form.data['genres']
+      venue.facebook_link = form.data['facebook_link']
+      venue.website = form.data['website']
+      venue.image_link = form.data['image_link']
+      venue.seeking_talent = form.data['seeking_talent']
+      db.session.commit()
+      flash('Venue ' + form.data['name'] + ' was successfully updated!')
+    except:
+      db.session.rollback()
+      print(sys.exc_info())
+      flash('An error occurred. Venue ' + form.data['name'] + ' could not be updated.')
+    finally:
+      db.session.close()
+  if not valid:
+    flash('An error occurred. Venue ' + form.data['name'] + ' has an error in a field.')
   return redirect(url_for('show_venue', venue_id=venue_id))
 
 #  Create Artist
@@ -570,6 +597,8 @@ def shows():
     "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
     "start_time": "2035-04-15T20:00:00.000Z"
   }]
+  data = Shows.query.all()
+  # print(data[0].start_time)
   return render_template('pages/shows.html', shows=data)
 
 @app.route('/shows/create')
@@ -582,8 +611,29 @@ def create_shows():
 def create_show_submission():
   # TODO: insert form data as a new Show record in the db, instead
 
+  form = ShowForm(request.form)
+  valid = form.validate()
+  flash(form.data)
+  if valid:
+    try:
+      show = Shows(
+        artist_id=form.data['artist_id'],
+        venue_id=form.data['venue_id'],
+        start_time=form.data['start_time']
+      )
+      db.session.add(show)
+      db.session.commit()
+      flash('Show was successfully listed!')
+    except:
+      db.session.rollback()
+      print(sys.exc_info())
+      flash('An error occurred. Show could not be inserted into the database.')
+    finally:
+      db.session.close()
+  if not valid:
+    flash('An error occurred. Show form has an error in a field.')
   # on successful db insert, flash success
-  flash('Show was successfully listed!')
+
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Show could not be listed.')
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
