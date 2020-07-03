@@ -34,26 +34,11 @@
 </ul>
 <script>
 	const deleteBtns = document.querySelectorAll('.delete-button');
+	var lst = document.getElementsByClassName("item")
 for (let i = 0; i < deleteBtns.length; i++) {
 	const btn = deleteBtns[i];
 	btn.onclick = function(e) {
-	// var dataId = $(this).attr("data-id");
-	// console.log(dataId);
 	const artistId = e.target.dataset['id'];
-	// console.log(artistId);
-	// console.log(document.getElementsByClassName("item").getElementById(artistId));
-	// const lst = document.getElementById(artistId);
-	// console.log(artistId);
-	// lst.remove();
-	// document.getElementById("foo")
-	// console.log(i);
-	// console.log(lst);
-	// console.log(e.target.dataset);
-	// e.target.remove();
-	
-	// console.log(lst[0]);
-	  var lst = document.getElementsByClassName("item")
-	//   console.log(list)
 	  fetch('/artists/' + artistId, {
 		method: 'DELETE'
 	  })

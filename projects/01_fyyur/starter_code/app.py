@@ -5,7 +5,7 @@
 import json
 import dateutil.parser
 import babel
-from flask import Flask, render_template, request, Response, flash, redirect, url_for
+from flask import Flask, render_template, request, Response, flash, redirect, url_for, jsonify
 from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
@@ -159,6 +159,23 @@ def search_venues():
       "num_upcoming_shows": 0,
     }]
   }
+  search_term = request.form.get('search_term', '').lower()
+  venues = Venue.query.all()
+  count = 0
+  data = []
+  for venue in venues:
+    if search_term in venue.name:
+      count += 1
+      data.append(
+        {
+          "id": venue.id,
+          "name": venue.name,
+          "num_upcoming_shows": 0
+        })
+  response = {
+    "count": count,
+    "data": data
+  }
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
 @app.route('/venues/<int:venue_id>')
@@ -166,8 +183,6 @@ def show_venue(venue_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
   data = Venue.query.get(venue_id)
-  print(venue_id)
-  print(data.genres)
   try:
     data.genres = data.genres.strip('{}').split(',')
   except:
@@ -343,6 +358,23 @@ def search_artists():
       "name": "Guns N Petals",
       "num_upcoming_shows": 0,
     }]
+  }
+  search_term = request.form.get('search_term', '').lower()
+  artists = Artist.query.all()
+  count = 0
+  data = []
+  for artist in artists:
+    if search_term in artist.name:
+      count += 1
+      data.append(
+        {
+          "id": artist.id,
+          "name": artist.name,
+          "num_upcoming_shows": 0
+        })
+  response = {
+    "count": count,
+    "data": data
   }
   return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
 
