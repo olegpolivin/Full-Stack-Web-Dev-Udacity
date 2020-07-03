@@ -1,3 +1,20 @@
+<style>
+	ul.items{
+    display: inline-block;
+	}
+	li{
+		display:inline-block;
+	}
+.delete-button {
+	border: none;
+	outline: none;
+	background:none;
+  	margin: 0;
+    display: inline;
+	color:red;
+	font-size: 20px;
+}
+</style>
 {% extends 'layouts/main.html' %}
 {% block title %}Fyyur | Venues{% endblock %}
 {% block content %}
@@ -9,11 +26,30 @@
 			<a href="/venues/{{ venue.id }}">
 				<i class="fas fa-music"></i>
 				<div class="item">
-					<h5>{{ venue.name }} [Upcoming Shows: {{venue.num_upcoming_shows}}]</h5>
+					<h5>{{ venue.name }} [Upcoming Shows: {{venue.num_upcoming_shows}}]
+					</h5>
 				</div>
 			</a>
 		</li>
+		<button class="delete-button" data-id="{{ venue.id }}">&cross;</button>
+		<br/>
 		{% endfor %}
 	</ul>
 {% endfor %}
+<script>
+	const deleteBtns = document.querySelectorAll('.delete-button');
+for (let i = 0; i < deleteBtns.length; i++) {
+	const btn = deleteBtns[i];
+	btn.onclick = function(e) {
+	  const venueId = e.target.dataset['id'];
+	  fetch('/venues/' + venueId, {
+		method: 'DELETE'
+	  })
+	  .then(function() {
+		const item = e.target.parentElement;
+		item.remove();
+	  })
+	}
+  }
+</script>
 {% endblock %}

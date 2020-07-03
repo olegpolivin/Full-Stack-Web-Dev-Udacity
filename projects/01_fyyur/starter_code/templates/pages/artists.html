@@ -1,3 +1,20 @@
+<style>
+	ul.items{
+    display: inline-block;
+	}
+	li{
+		display:inline-block;
+	}
+.delete-button {
+	border: none;
+	outline: none;
+	background:none;
+  	margin: 0;
+    display: inline;
+	color:red;
+	font-size: 20px;
+}
+</style>
 {% extends 'layouts/main.html' %}
 {% block title %}Fyyur | Artists{% endblock %}
 {% block content %}
@@ -6,11 +23,46 @@
 	<li>
 		<a href="/artists/{{ artist.id }}">
 			<i class="fas fa-users"></i>
-			<div class="item">
+			<div class="item" data-id="{{ artist.id }}">
 				<h5>{{ artist.name }}</h5>
 			</div>
 		</a>
 	</li>
+	<button class="delete-button" data-id="{{ artist.id }}">&cross;</button>
+	<br/>
 	{% endfor %}
 </ul>
+<script>
+	const deleteBtns = document.querySelectorAll('.delete-button');
+for (let i = 0; i < deleteBtns.length; i++) {
+	const btn = deleteBtns[i];
+	btn.onclick = function(e) {
+	// var dataId = $(this).attr("data-id");
+	// console.log(dataId);
+	const artistId = e.target.dataset['id'];
+	// console.log(artistId);
+	// console.log(document.getElementsByClassName("item").getElementById(artistId));
+	// const lst = document.getElementById(artistId);
+	// console.log(artistId);
+	// lst.remove();
+	// document.getElementById("foo")
+	// console.log(i);
+	// console.log(lst);
+	// console.log(e.target.dataset);
+	// e.target.remove();
+	
+	// console.log(lst[0]);
+	  var lst = document.getElementsByClassName("item")
+	//   console.log(list)
+	  fetch('/artists/' + artistId, {
+		method: 'DELETE'
+	  })
+	  .then(function() {
+		const item = e.target;
+		item.remove();
+		lst[i].remove();
+	  })
+  }
+}
+</script>
 {% endblock %}

@@ -301,7 +301,14 @@ def create_venue_submission():
 def delete_venue(venue_id):
   # TODO: Complete this endpoint for taking a venue_id, and using
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
-
+  try:
+    Venue.query.filter_by(id=venue_id).delete()
+    db.session.commit()
+  except:
+    db.session.rollback()
+  finally:
+    db.session.close()
+  return jsonify({ 'success': True })
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
   return None
@@ -344,8 +351,8 @@ def show_artist(artist_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
   data = Artist.query.get(artist_id)
-  print(artist_id)
-  print(data.genres)
+  # print(artist_id)
+  # print(data.genres)
   try:
     data.genres = data.genres.strip('{}').split(',')
   except:
@@ -444,13 +451,37 @@ def edit_artist(artist_id):
     "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
   }
   # TODO: populate form with fields from artist with ID <artist_id>
+  artist = Artist.query.get(artist_id)
   return render_template('forms/edit_artist.html', form=form, artist=artist)
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
   # TODO: take values from the form submitted, and update existing
   # artist record with ID <artist_id> using the new attributes
-
+  form = ArtistForm()
+  valid = form.validate()
+  if valid:
+    try:
+      artist = Artist.query.get(artist_id)
+      artist.name = form.data['name']
+      artist.city = form.data['city']
+      artist.state = form.data['state']
+      artist.phone = form.data['phone']
+      artist.genres = form.data['genres']
+      artist.facebook_link = form.data['facebook_link']
+      artist.website = form.data['website']
+      artist.image_link = form.data['image_link']
+      artist.seeking_venue = form.data['seeking_venue']
+      db.session.commit()
+      flash('Artist ' + form.data['name'] + ' was successfully updated!')
+    except:
+      db.session.rollback()
+      print(sys.exc_info())
+      flash('An error occurred. Artist ' + form.data['name'] + ' could not be updated.')
+    finally:
+      db.session.close()
+  if not valid:
+    flash('An error occurred. Artist ' + form.data['name'] + ' has an error in a field.')
   return redirect(url_for('show_artist', artist_id=artist_id))
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
@@ -478,9 +509,8 @@ def edit_venue(venue_id):
 def edit_venue_submission(venue_id):
   # TODO: take values from the form submitted, and update existing
   # venue record with ID <venue_id> using the new attributes
-  form = VenueForm(request.form)
+  form = VenueForm()
   valid = form.validate()
-  flash(form.data)
   if valid:
     try:
       venue = Venue.query.get(venue_id)
@@ -552,7 +582,17 @@ def create_artist_submission():
   # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
   return render_template('pages/home.html')
 
-
+@app.route('/artists/<artist_id>', methods=['DELETE'])
+def delete_artist(artist_id):
+  try:
+    Artist.query.filter_by(id=artist_id).delete()
+    db.session.commit()
+  except:
+    db.session.rollback()
+  finally:
+    db.session.close()
+  return jsonify({ 'success': True })
+  return None
 #  Shows
 #  ----------------------------------------------------------------
 
