@@ -38,6 +38,7 @@
 {% endfor %}
 <script>
 	const deleteBtns = document.querySelectorAll('.delete-button');
+	var lst = document.getElementsByClassName("item")
 for (let i = 0; i < deleteBtns.length; i++) {
 	const btn = deleteBtns[i];
 	btn.onclick = function(e) {
@@ -46,8 +47,9 @@ for (let i = 0; i < deleteBtns.length; i++) {
 		method: 'DELETE'
 	  })
 	  .then(function() {
-		const item = e.target.parentElement;
+		const item = e.target;
 		item.remove();
+		lst[i].remove();
 	  })
 	}
   }

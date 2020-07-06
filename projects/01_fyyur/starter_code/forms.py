@@ -13,7 +13,8 @@ class ShowForm(Form):
     start_time = DateTimeField(
         'start_time',
         validators=[DataRequired()],
-        default= datetime.today()
+        default= datetime.today(),
+        format='%Y-%m-%d %H:%M'
     )
 
 class VenueForm(Form):
@@ -125,6 +126,10 @@ class VenueForm(Form):
     seeking_talent = BooleanField(
         'We look for talents!', validators=[]
         )
+    seeking_description = StringField(
+        'About', validators=[]
+        )
+
 
 
 class ArtistForm(Form):
@@ -231,6 +236,9 @@ class ArtistForm(Form):
     )
     seeking_venue = BooleanField(
         'We look for venues!', validators=[]
+        )
+    seeking_description = StringField(
+        'About', validators=[]
         )
 
 # TODO IMPLEMENT NEW ARTIST FORM AND NEW SHOW FORM
