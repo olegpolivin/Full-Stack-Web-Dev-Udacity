@@ -9,7 +9,7 @@ class FormView extends Component {
     this.state = {
       question: "",
       answer: "",
-      difficulty: 1,
+      difficulty: 4,
       category: 1,
       categories: {}
     }

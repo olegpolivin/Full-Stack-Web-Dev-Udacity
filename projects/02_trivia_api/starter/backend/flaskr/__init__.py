@@ -33,11 +33,10 @@ def create_app(test_config=None):
   @app.route('/categories/')
   def get_categories():
     categories = Category.query.order_by(Category.id).all()
-    # formatted_categories = [cat.format() for cat in categories]
-    categories = [cat.type for cat in categories]
+    formatted_categories = {category.id: category.type for category in categories}
     return jsonify({
       'success': True, 
-      'categories': categories
+      'categories': formatted_categories
       })
 
   '''
@@ -60,13 +59,13 @@ def create_app(test_config=None):
     questions = Question.query.all()
     formatted_questions = [question.format() for question in questions]
     
-    categories = Category.query.all()
-    categories = [cat.type for cat in categories]
+    categories = Category.query.order_by(Category.type).all()
+    formatted_categories = {category.id: category.type for category in categories}
     return jsonify({
       'success': True,
       'questions': formatted_questions[start:end],
       'total_questions': len(formatted_questions),
-      'categories': categories
+      'categories': formatted_categories
       })
   '''
   @TODO: 
@@ -98,8 +97,8 @@ def create_app(test_config=None):
     q = Question(
       form['question'],
       form['answer'],
-      form['difficulty'],
-      form['category']
+      form['category'],
+      form['difficulty']
       )
     q.insert()
     return jsonify({ 'success': True })
@@ -118,7 +117,6 @@ def create_app(test_config=None):
   def search_question():
     form = request.get_json()
     searchTerm = form['searchTerm'].lower()
-    print(searchTerm)
     questions = Question.query.filter(Question.question.ilike("%{}%".format(searchTerm))).all()
     questions = [q.format() for q in questions]
     return jsonify({
@@ -137,7 +135,7 @@ def create_app(test_config=None):
   '''
   @app.route('/categories/<int:category_id>/questions')
   def get_questions_by_category_id(category_id):
-    category_questions = Question.query.filter_by(category=category_id + 1).all()
+    category_questions = Question.query.filter_by(category=category_id).all()
     category_questions = [q.format() for q in category_questions]
     return jsonify({
       'success': True, 
@@ -156,7 +154,23 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   '''
-
+  @app.route('/quizzes', methods=['POST'])
+  def play_quiz():
+    category_id = request.get_json()['quiz_category']['id']
+    previous_questions = request.get_json()['previous_questions']
+    if category_id == 0:
+      questions_to_ask = Question.query.filter(~Question.id.in_(previous_questions)).all()
+    else:
+      questions_to_ask = Question.query.filter_by(category=category_id). \
+        filter(~Question.id.in_(previous_questions)).all()
+    if not questions_to_ask:
+      print('AALAL')
+      abort(404)
+    currentQuestion = random.choice(questions_to_ask).format()
+    return jsonify({
+        'previousQuestions': currentQuestion['id'],
+        'question': currentQuestion
+      })
   '''
   @TODO: 
   Create error handlers for all expected errors 
