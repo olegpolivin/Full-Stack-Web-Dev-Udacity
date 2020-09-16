@@ -20,17 +20,18 @@ def create_app(test_config=None):
   '''
   @TODO: Use the after_request decorator to set Access-Control-Allow
   '''
-  # @app.after_request
-  # def after_request(response):
-  #   response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  #   response.headers.add('Access-Control-Allow-Methods', 'GET, POST')
+  @app.after_request
+  def after_request(response):
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, DELETE')
+    return response
 
   '''
   @TODO: 
   Create an endpoint to handle GET requests 
   for all available categories.
   '''
-  @app.route('/categories/')
+  @app.route('/categories')
   def get_categories():
     categories = Category.query.order_by(Category.id).all()
     formatted_categories = {category.id: category.type for category in categories}
@@ -51,7 +52,7 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
-  @app.route('/questions/')
+  @app.route('/questions')
   def get_questions():
     page = request.args.get('page', 1, type=int)
     start = (page - 1) * QUESTIONS_PER_PAGE
@@ -59,6 +60,9 @@ def create_app(test_config=None):
     questions = Question.query.all()
     formatted_questions = [question.format() for question in questions]
     
+    if not len(formatted_questions[start:end]):
+      abort(404)
+
     categories = Category.query.order_by(Category.type).all()
     formatted_categories = {category.id: category.type for category in categories}
     return jsonify({
@@ -163,9 +167,13 @@ def create_app(test_config=None):
     else:
       questions_to_ask = Question.query.filter_by(category=category_id). \
         filter(~Question.id.in_(previous_questions)).all()
+
     if not questions_to_ask:
-      print('AALAL')
-      abort(404)
+      return jsonify({
+        'previousQuestions': previous_questions,
+        'question': None
+      })
+
     currentQuestion = random.choice(questions_to_ask).format()
     return jsonify({
         'previousQuestions': currentQuestion['id'],
@@ -176,7 +184,38 @@ def create_app(test_config=None):
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''
+  @app.errorhandler(400)
+  def bad_request(error):
+    return jsonify({
+        "success": False, 
+        "error": 400,
+        "message": "Bad request"
+        }), 400
+
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+        "success": False, 
+        "error": 404,
+        "message": "Not found"
+        }), 404
   
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+      "success": False, 
+      "error": 422,
+      "message": "unprocessable"
+      }), 422
+
+  @app.errorhandler(500)
+  def internal_server_error(error):
+    return jsonify({
+        "success": False, 
+        "error": 500,
+        "message": "It's not you, it's us"
+        }), 500
+
   return app
 
     
