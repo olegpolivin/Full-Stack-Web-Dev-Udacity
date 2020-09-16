@@ -27,7 +27,13 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-
+@app.route('/drinks')
+def get_drinks():
+    drinks = Drink.query.all()
+    return jsonify({
+        'success': True,
+        'drinks': drinks
+    })
 
 '''
 @TODO implement endpoint
@@ -37,7 +43,13 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-
+@app.route('/drinks-detail')
+def get_drinks_detail():
+    drinks = Drink.query.all()
+    return jsonify({
+        'success': True,
+        'drinks': drinks
+    })
 
 '''
 @TODO implement endpoint
@@ -48,7 +60,68 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
+# class Drink(db.Model):
+#     # Autoincrementing, unique primary key
+#     id = Column(Integer().with_variant(Integer, "sqlite"), primary_key=True)
+#     # String Title
+#     title = Column(String(80), unique=True)
+#     # the ingredients blob - this stores a lazy json blob
+#     # the required datatype is [{'color': string, 'name':string, 'parts':number}]
+#     recipe =  Column(String(180), nullable=False)
 
+#     '''
+#     short()
+#         short form representation of the Drink model
+#     '''
+#     def short(self):
+#         print(json.loads(self.recipe))
+#         short_recipe = [{'color': r['color'], 'parts': r['parts']} for r in json.loads(self.recipe)]
+#         return {
+#             'id': self.id,
+#             'title': self.title,
+#             'recipe': short_recipe
+#         }
+
+#     '''
+#     long()
+#         long form representation of the Drink model
+#     '''
+#     def long(self):
+#         return {
+#             'id': self.id,
+#             'title': self.title,
+#             'recipe': json.loads(self.recipe)
+#         }
+#   //                             id: 1,
+#   //                             title: 'matcha shake',
+#   //                             recipe: [
+#   //                                   {
+#   //                                     name: 'milk',
+#   //                                     color: 'grey',
+#   //                                     parts: 1
+#   //                                   },
+#   //                                   {
+#   //                                     name: 'matcha',
+#   //                                     color: 'green',
+#   //                                     parts: 3
+#   //                                   },
+#   //                                 ]
+#   //                           },
+@app.route('/drinks', methods=['POST'])
+def add_drinks():
+    data = request.get_json()
+    title = data['title']
+    recipe = data['recipe']
+    print(json.dumps(recipe))
+    drink = Drink(
+        title,
+        recipe
+    )
+    drink.insert()
+    return jsonify({
+        'success': True,
+        'drinks': drink.long()
+    })
 
 '''
 @TODO implement endpoint
