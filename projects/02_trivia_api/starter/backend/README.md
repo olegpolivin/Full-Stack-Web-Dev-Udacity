@@ -66,7 +66,34 @@ One note before you delve into your tasks: for each endpoint you are expected to
 8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
-REVIEW_COMMENT
+## Endpoints
+GET '/categories'
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+- Request Arguments: None
+- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
+{'1' : "Science",
+'2' : "Art",
+'3' : "Geography",
+'4' : "History",
+'5' : "Entertainment",
+'6' : "Sports"}
+
+GET '/questions'
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+- Fetches a list of questions. Questions are paginated, if no argument for page is given, the first page is returned. Default: 10 questions per page.
+- Request Arguments: None
+- Returns: A JSON object with four keys:
+  - categories, that contains an object of id: category_string key:value pairs
+  - questions, that contain a list of dictionaries of question: text of a question, answer: text of an answer, category: category_id, difficulty: difficulty level, id: id of a question
+  - success, that is a boolean of whether a request is successful or not (True/False)
+  - total_questions, that is an integer giving a total number of questions in the trivia game
+  
+GET '/categories/<int:category_id>/questions'
+POST '/questions'
+POST '/questions'
+POST '/quizzes'
+DELETE '/questions/<int:question_id>'
+
 ```
 This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
 
