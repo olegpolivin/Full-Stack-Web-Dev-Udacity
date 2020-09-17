@@ -26,10 +26,10 @@ class TriviaTestCase(unittest.TestCase):
             self.db.create_all()
         
         self.add_question = {
-            'question': 'Do cats like milky way?',
-            'answer': 'Kind of',
-            'category': 1,
-            'difficulty': 4
+            "question": "Do cats like milky way?",
+            "answer": "Sure",
+            "category": 1,
+            "difficulty": 4
         }
     
     def tearDown(self):
@@ -68,23 +68,29 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], "Not found")
 
     # testing @app.route('/questions/<int:question_id>', methods=['DELETE'])
-    # def test_delete_question(self):
-    #     res = self.client().delete('/questions/2')
-    #     data = json.loads(res.data)
-    #     deleted_question = Question.query.filter_by(id=2).one_or_none()
+    def test_delete_question(self):
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertTrue(data['success'])
-    #     self.assertEqual(data['question_id'], 2)
-    #     self.assertIsNone(deleted_question)
-    
+        # First, let's create a question, get id, and delete it
+        res = self.client().post('/questions', json=self.add_question)
+        data = json.loads(res.data)
+        id_to_delete = data['id']
+
+        res = self.client().delete('/questions/'+str(id_to_delete))
+        data = json.loads(res.data)
+        deleted_question = Question.query.filter_by(id=id_to_delete).one_or_none()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertEqual(data['question_id'], id_to_delete)
+        self.assertIsNone(deleted_question)
+
     def test_422_if_question_does_not_exist(self):
         res = self.client().delete('/questions/2020')
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.status_code, 404)
         self.assertFalse(data['success'])
-        self.assertEqual(data['message'], 'unprocessable')
+        self.assertEqual(data['message'], 'Not found')
 
     # testing @app.route('/questions', methods=['POST']) for adding questions
     def test_adding_a_question(self):
@@ -98,12 +104,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['success'])
         self.assertEqual(diff, 1)
-    
+
     def test_posting_incomplete_model_question(self):
         res = self.client().post('/questions', json = {
-            'answer': 'Kind of',
-            'category': 1,
-            'difficulty': 4
+            "answer": "Kind of",
+            "category": 1,
+            "difficulty": 4
         })
         data = json.loads(res.data)
 
@@ -112,10 +118,62 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'unprocessable')
 
     # testing @app.route('/questions', methods=['POST']) for search
+    def test_empty_search(self):
+        res = self.client().post('/questions', json= {
+            "searchTerm": "therecouldnotbesuchsubstringinanyquestion"
+        })
+        data = json.loads(res.data)
+
+        self.assertFalse(data['questions'])
 
     # testing @app.route('/categories/<int:category_id>/questions')
+    def test_get_questions_by_category_id(self):
+        res = self.client().get('categories/1/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(len(data['questions']))
+
+    def test_get_questions_by_category_id_which_does_not_exist(self):
+        res = self.client().get('categories/10/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], "Not found")
 
     # testing @app.route('/quizzes', methods=['POST'])
+    def test_quiz_category_id_existing(self):
+        json_data = {
+            "previous_questions": [],
+            "quiz_category":
+            {
+                "type": "Science",
+                "id": 1
+            }
+        }
+        res = self.client().post('/quizzes', json = json_data)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['previousQuestions'])
+        self.assertTrue(data['question'])
+
+    def test_quiz_category_id_not_existing(self):
+        json_data = {
+            "previous_questions": [],
+            "quiz_category":
+            {
+                "type": "Science",
+                "id": 10
+            }
+        }
+        res = self.client().post('/quizzes', json = json_data)
+        data = json.loads(res.data)
+
+        self.assertIsNone(data['question'])
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

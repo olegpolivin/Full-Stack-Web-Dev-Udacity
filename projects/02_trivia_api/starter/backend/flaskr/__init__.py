@@ -83,19 +83,16 @@ def create_app(test_config=None):
   '''
   @app.route('/questions/<int:question_id>', methods=['DELETE'])
   def delete_question(question_id):
-    try:
-      question = Question.query.filter_by(id=question_id).one_or_none()
-      if question is None:
-        abort(404)
-      else:
-        question.delete()
-        return jsonify({
-          'success': True,
-          'question_id': question_id
-          })
+    question = Question.query.filter_by(id=question_id).one_or_none()
+    if question is None:
+      abort(404)
+    else:
+      question.delete()
+      return jsonify({
+        'success': True,
+        'question_id': question_id
+        })
 
-    except:
-      abort(422)
   '''
   @TODO: 
   Create an endpoint to POST a new question, 
@@ -119,7 +116,10 @@ def create_app(test_config=None):
         body['difficulty']
         )
       q.insert()
-      return jsonify({ 'success': True })
+      return jsonify({
+        'success': True, 
+        'id': q.id
+      })
 
     except:
       abort(422)
@@ -159,20 +159,16 @@ def create_app(test_config=None):
   '''
   @app.route('/categories/<int:category_id>/questions')
   def get_questions_by_category_id(category_id):
-    try:
-      category_questions = Question.query.filter_by(category=category_id).one_or_none()
-
-      if category_questions is None:
-        abort(404)
-      else:
-        category_questions = [q.format() for q in category_questions]
-      return jsonify({
-        'success': True, 
-        'questions': category_questions,
-        'total_questions': len(category_questions)
-        })
-    except:
-      abort(422)
+    category_questions = Question.query.filter_by(category=category_id).all()
+    if not category_questions:
+      abort(404)
+    else:
+      category_questions = [q.format() for q in category_questions]
+    return jsonify({
+      'success': True, 
+      'questions': category_questions,
+      'total_questions': len(category_questions)
+      })
 
   '''
   @TODO: 
