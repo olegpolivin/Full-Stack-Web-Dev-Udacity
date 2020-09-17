@@ -164,7 +164,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 - Request Body: Should include a dictionary "searchTerm: {{text}}". Example:
 ```
 {
-    "searchTerm":"what"
+    "searchTerm": "what"
 }
 ```
 - Returns: A JSON object with all questions containing the `searchTerm`, request status and total number of questions.
