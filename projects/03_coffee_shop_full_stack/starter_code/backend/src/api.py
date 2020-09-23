@@ -6,7 +6,6 @@ from flask_cors import CORS
 
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, requires_auth
-
 app = Flask(__name__)
 setup_db(app)
 CORS(app)
@@ -16,7 +15,7 @@ CORS(app)
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
-# db_drop_and_create_all()
+db_drop_and_create_all()
 
 ## ROUTES
 '''
@@ -27,6 +26,7 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+
 @app.route('/drinks')
 def get_drinks():
     drinks = Drink.query.all()
@@ -45,7 +45,8 @@ def get_drinks():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks-detail')
-def get_drinks_detail():
+@requires_auth('get:drinks-detail')
+def get_drinks_detail(permission):
     drinks = Drink.query.all()
     list_of_drinks_long = [drink.long() for drink in drinks]
     return jsonify({
@@ -63,7 +64,8 @@ def get_drinks_detail():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks', methods=['POST'])
-def add_drinks():
+@requires_auth('post:drinks')
+def add_drinks(permission):
     data = request.get_json()
     title, recipe = data['title'], data['recipe']
     drink = Drink(
@@ -89,18 +91,25 @@ def add_drinks():
 # '''
 
 @app.route('/drinks/<int:drink_id>', methods=['PATCH'])
-def patch_drinks(drink_id):
+@requires_auth('patch:drinks')
+def patch_drinks(permission, drink_id):
     data = request.get_json()
     drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
+
     if not drink:
         abort(404)
-    title, recipe = data['title'], data['recipe']
-    drink.title = title
-    drink.recipe = json.dumps(recipe)
+    try:
+        drink.title = data['title']
+    except:
+        pass
+    try:
+        drink.recipe = data['recipe']
+    except:
+        pass
     drink.update()
     return jsonify({
         'success': True,
-        'drinks': drink.long()
+        'drinks': [drink.long()]
     })
 
 '''
@@ -114,7 +123,8 @@ def patch_drinks(drink_id):
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks/<int:drink_id>', methods=['DELETE'])
-def delete_drinks(drink_id):
+@requires_auth('delete:drinks')
+def delete_drinks(permission, drink_id):
     data = request.get_json()
     drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
     if not drink:
@@ -164,3 +174,10 @@ def not_found(error):
 @TODO implement error handler for AuthError
     error handler should conform to general task above 
 '''
+@app.errorhandler(AuthError)
+def autherror(AuthError):
+    return jsonify({
+        "success": False, 
+        "error": AuthError.status_code,
+        "message": AuthError.error
+        }), 401
