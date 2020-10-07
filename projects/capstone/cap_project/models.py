@@ -31,7 +31,7 @@ class Course(db.Model):
     website = Column(String)
     price_per_month = Column(Integer)
     duration_months = Column(Integer)
-    university = Column(Integer, db.ForeignKey('university.id', ondelete = 'CASCADE'), nullable=False)
+    university_id = Column(Integer, db.ForeignKey('university.id', ondelete = 'CASCADE'), nullable=False)
     
     def __init__(self,
                 course,
@@ -79,7 +79,8 @@ class Platform(db.Model):
     __tablename__ = 'platform'
 
     id = Column(Integer, primary_key=True)
-    platform = db.relationship('course', backref='platform', lazy=True, cascade="all, delete")
+    course = db.relationship('course', backref='platform', lazy=True, cascade="all, delete")
+    platform_name = Column(String)
     
     def __init__(self, platform):
         self.platform = platform
@@ -108,7 +109,8 @@ class University(db.Model):
     __tablename__ = 'university'
 
     id = Column(Integer, primary_key=True)
-    university = db.relationship('course', backref='university', lazy=True, cascade="all, delete")
+    course = db.relationship('course', backref='university', lazy=True, cascade="all, delete")
+    university_name = Column(String)
     
     def __init__(self, university):
         self.university = university
@@ -137,7 +139,8 @@ class Domain(db.Model):
     __tablename__ = 'domain'
 
     id = Column(Integer, primary_key=True)
-    domain = db.relationship('domain', backref='domain', lazy=True, cascade="all, delete")
+    course = db.relationship('domain', backref='domain', lazy=True, cascade="all, delete")
+    domain_name = Column(String)
     
     def __init__(self, domain):
         self.university = domain
