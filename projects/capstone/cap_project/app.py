@@ -12,9 +12,17 @@ def create_app(test_config=None):
   setup_db(app)
   CORS(app)
 
-  @app.route('/index')
-  def hi():
-    return "Hi"
+  @app.route('/courses')
+  def get_courses():
+    print(Course)
+    courses = Course.query.all()
+    courses = [course.format() for course in courses]
+    print(courses)
+    return jsonify({
+      'success': True,
+      'courses': courses,
+      'total_courses': len(courses)
+      })
 
   return app
 

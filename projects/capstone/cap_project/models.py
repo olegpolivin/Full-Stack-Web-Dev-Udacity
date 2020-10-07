@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 
 database_name = "EducationOnlineDB"
-database_path = "postgres://{}/{}".format('localhost:5432', database_name)
+database_path = "postgres:///{}".format(database_name)
 
 db = SQLAlchemy()
 
@@ -25,29 +25,29 @@ class Course(db.Model):
     __tablename__ = 'course'
 
     id = Column(Integer, primary_key=True)
-    course = Column(String)
-    domain = Column(Integer, db.ForeignKey('domain.id', ondelete = 'CASCADE'), nullable=False)
-    platform = Column(Integer, db.ForeignKey('platform.id', ondelete = 'CASCADE'), nullable=False)
+    course_name = Column(String)
+    domain_id = Column(Integer, db.ForeignKey('domain.id', ondelete = 'CASCADE'), nullable=False)
+    platform_id = Column(Integer, db.ForeignKey('platform.id', ondelete = 'CASCADE'), nullable=False)
     website = Column(String)
     price_per_month = Column(Integer)
     duration_months = Column(Integer)
     university_id = Column(Integer, db.ForeignKey('university.id', ondelete = 'CASCADE'), nullable=False)
     
     def __init__(self,
-                course,
-                domain,
-                platform,
+                course_name,
+                domain_id,
+                platform_id,
                 website,
                 price_per_month,
                 duration_months,
-                university):
-        self.course = course
-        self.domain = domain
-        self.platform = platform
+                university_id):
+        self.course_name = course_name
+        self.domain_id = domain_id
+        self.platform_id = platform_id
         self.website = website
         self.price_per_month = price_per_month
         self.duration_months = duration_months
-        self.university = university
+        self.university_id = university_id
 
     def insert(self):
         db.session.add(self)
@@ -63,13 +63,13 @@ class Course(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'course': self.course,
-            'domain': self.domain,
-            'platform': self.platform,
+            'course_name': self.course_name,
+            'domain_id': self.domain_id,
+            'platform_id': self.platform_id,
             'website': self.website,
             'price_per_month': self.price_per_month,
             'duration_months': self.duration_months,
-            'university': self.university
+            'university_id': self.university_id
         }
 
 '''
@@ -79,7 +79,7 @@ class Platform(db.Model):
     __tablename__ = 'platform'
 
     id = Column(Integer, primary_key=True)
-    course = db.relationship('course', backref='platform', lazy=True, cascade="all, delete")
+    course = db.relationship('Course', backref='platform', lazy=True, cascade="all, delete")
     platform_name = Column(String)
     
     def __init__(self, platform):
@@ -99,7 +99,7 @@ class Platform(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'platform': self.platform
+            'platform_name': self.platform_name
         }
 
 '''
@@ -109,7 +109,7 @@ class University(db.Model):
     __tablename__ = 'university'
 
     id = Column(Integer, primary_key=True)
-    course = db.relationship('course', backref='university', lazy=True, cascade="all, delete")
+    course = db.relationship('Course', backref='university', lazy=True, cascade="all, delete")
     university_name = Column(String)
     
     def __init__(self, university):
@@ -129,7 +129,7 @@ class University(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'university': self.university
+            'university_name': self.university_name
         }
 
 '''
@@ -139,7 +139,7 @@ class Domain(db.Model):
     __tablename__ = 'domain'
 
     id = Column(Integer, primary_key=True)
-    course = db.relationship('domain', backref='domain', lazy=True, cascade="all, delete")
+    course = db.relationship('Course', backref='domain', lazy=True, cascade="all, delete")
     domain_name = Column(String)
     
     def __init__(self, domain):
@@ -159,5 +159,5 @@ class Domain(db.Model):
     def format(self):
         return {
             'id': self.id,
-            'domain': self.domain
+            'domain_name': self.domain_name
         }
