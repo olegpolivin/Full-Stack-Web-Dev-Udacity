@@ -31,23 +31,20 @@ class Course(db.Model):
     website = Column(String)
     price_per_month = Column(Integer)
     duration_months = Column(Integer)
-    university_id = Column(Integer, db.ForeignKey('university.id', ondelete = 'CASCADE'), nullable=False)
-    
+
     def __init__(self,
                 course_name,
                 domain_id,
                 platform_id,
                 website,
                 price_per_month,
-                duration_months,
-                university_id):
+                duration_months):
         self.course_name = course_name
         self.domain_id = domain_id
         self.platform_id = platform_id
         self.website = website
         self.price_per_month = price_per_month
         self.duration_months = duration_months
-        self.university_id = university_id
 
     def insert(self):
         db.session.add(self)
@@ -68,8 +65,7 @@ class Course(db.Model):
             'platform_id': self.platform_id,
             'website': self.website,
             'price_per_month': self.price_per_month,
-            'duration_months': self.duration_months,
-            'university_id': self.university_id
+            'duration_months': self.duration_months
         }
 
 '''
@@ -103,36 +99,6 @@ class Platform(db.Model):
         }
 
 '''
-Universities
-'''
-class University(db.Model):
-    __tablename__ = 'university'
-
-    id = Column(Integer, primary_key=True)
-    course = db.relationship('Course', backref='university', lazy=True, cascade="all, delete")
-    university_name = Column(String)
-    
-    def __init__(self, university):
-        self.university = university
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-  
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def format(self):
-        return {
-            'id': self.id,
-            'university_name': self.university_name
-        }
-
-'''
 Domains
 '''
 class Domain(db.Model):
@@ -142,8 +108,8 @@ class Domain(db.Model):
     course = db.relationship('Course', backref='domain', lazy=True, cascade="all, delete")
     domain_name = Column(String)
     
-    def __init__(self, domain):
-        self.university = domain
+    def __init__(self, domain_name):
+        self.domain_name = domain_name
 
     def insert(self):
         db.session.add(self)
