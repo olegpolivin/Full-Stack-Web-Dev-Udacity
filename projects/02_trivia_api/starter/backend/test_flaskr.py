@@ -24,14 +24,14 @@ class TriviaTestCase(unittest.TestCase):
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
-        
+
         self.add_question = {
             "question": "Do cats like milky way?",
             "answer": "Sure",
             "category": 1,
             "difficulty": 4
         }
-    
+
     def tearDown(self):
         """Executed after reach test"""
         pass

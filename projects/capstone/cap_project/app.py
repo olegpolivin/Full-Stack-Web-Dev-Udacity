@@ -59,13 +59,14 @@ def create_app(test_config=None):
 
       return jsonify({
         'success': True, 
-        'id': course.id
+        'course_id': course.id
       })
     except:
       abort(422)
 
   @app.route('/courses/<int:course_id>', methods=['DELETE'])
-  def delete_course(course_id):
+  @requires_auth('delete:course')
+  def delete_course(permission, course_id):
     course = Course.query.filter_by(id=course_id).one_or_none()
     if course is None:
       abort(404)
@@ -106,12 +107,13 @@ def create_app(test_config=None):
       domain.insert()
       return jsonify({
         'success': True, 
-        'id': domain.id
+        'domain_id': domain.id
       })
     except:
       abort(422)
 
   @app.route('/domains/<int:domain_id>', methods=['PATCH'])
+  @requires_auth('patch:domain')
   def patch_domain(domain_id):
     domain = Domain.query.filter_by(id=domain_id).one_or_none()
     if domain is None:
@@ -123,13 +125,14 @@ def create_app(test_config=None):
       domain.update()
       return jsonify({
         'success': True, 
-        'id': domain_id,
+        'domain_id': domain_id,
         'new_name': domain.domain_name
       })
     except:
       abort(422)
 
   @app.route('/domains/<int:domain_id>', methods=['DELETE'])
+  @requires_auth('delete:domain')
   def delete_domain(domain_id):
     domain = Domain.query.filter_by(id=domain_id).one_or_none()
     if domain is None:
