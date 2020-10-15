@@ -114,7 +114,7 @@ def create_app(test_config=None):
 
   @app.route('/domains/<int:domain_id>', methods=['PATCH'])
   @requires_auth('patch:domain')
-  def patch_domain(domain_id):
+  def patch_domain(permission, domain_id):
     domain = Domain.query.filter_by(id=domain_id).one_or_none()
     if domain is None:
       abort(404)
@@ -133,7 +133,7 @@ def create_app(test_config=None):
 
   @app.route('/domains/<int:domain_id>', methods=['DELETE'])
   @requires_auth('delete:domain')
-  def delete_domain(domain_id):
+  def delete_domain(permission, domain_id):
     domain = Domain.query.filter_by(id=domain_id).one_or_none()
     if domain is None:
       abort(404)
