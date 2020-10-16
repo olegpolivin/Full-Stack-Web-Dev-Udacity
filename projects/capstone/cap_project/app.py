@@ -215,4 +215,5 @@ def create_app(test_config=None):
 APP = create_app()
 
 if __name__ == '__main__':
-    APP.run(host='0.0.0.0', port=8080, debug=True)
+  port = int(os.environ.get('PORT'), 5050)
+  APP.run(host='0.0.0.0', port=port, debug=True)
