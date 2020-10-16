@@ -1,0 +1,351 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.3
+-- Dumped by pg_dump version 12.3
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: olegpolivin
+--
+
+CREATE TABLE public.alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO olegpolivin;
+
+--
+-- Name: course; Type: TABLE; Schema: public; Owner: olegpolivin
+--
+
+CREATE TABLE public.course (
+    id integer NOT NULL,
+    website character varying,
+    price_per_month integer,
+    duration_months integer,
+    university_id integer NOT NULL,
+    course_name character varying,
+    domain_id integer,
+    platform_id integer
+);
+
+
+ALTER TABLE public.course OWNER TO olegpolivin;
+
+--
+-- Name: course_id_seq; Type: SEQUENCE; Schema: public; Owner: olegpolivin
+--
+
+CREATE SEQUENCE public.course_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.course_id_seq OWNER TO olegpolivin;
+
+--
+-- Name: course_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: olegpolivin
+--
+
+ALTER SEQUENCE public.course_id_seq OWNED BY public.course.id;
+
+
+--
+-- Name: domain; Type: TABLE; Schema: public; Owner: olegpolivin
+--
+
+CREATE TABLE public.domain (
+    id integer NOT NULL,
+    domain_name character varying
+);
+
+
+ALTER TABLE public.domain OWNER TO olegpolivin;
+
+--
+-- Name: domain_id_seq; Type: SEQUENCE; Schema: public; Owner: olegpolivin
+--
+
+CREATE SEQUENCE public.domain_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.domain_id_seq OWNER TO olegpolivin;
+
+--
+-- Name: domain_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: olegpolivin
+--
+
+ALTER SEQUENCE public.domain_id_seq OWNED BY public.domain.id;
+
+
+--
+-- Name: platform; Type: TABLE; Schema: public; Owner: olegpolivin
+--
+
+CREATE TABLE public.platform (
+    id integer NOT NULL,
+    platform_name character varying
+);
+
+
+ALTER TABLE public.platform OWNER TO olegpolivin;
+
+--
+-- Name: platform_id_seq; Type: SEQUENCE; Schema: public; Owner: olegpolivin
+--
+
+CREATE SEQUENCE public.platform_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.platform_id_seq OWNER TO olegpolivin;
+
+--
+-- Name: platform_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: olegpolivin
+--
+
+ALTER SEQUENCE public.platform_id_seq OWNED BY public.platform.id;
+
+
+--
+-- Name: university; Type: TABLE; Schema: public; Owner: olegpolivin
+--
+
+CREATE TABLE public.university (
+    id integer NOT NULL,
+    university_name character varying
+);
+
+
+ALTER TABLE public.university OWNER TO olegpolivin;
+
+--
+-- Name: university_id_seq; Type: SEQUENCE; Schema: public; Owner: olegpolivin
+--
+
+CREATE SEQUENCE public.university_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.university_id_seq OWNER TO olegpolivin;
+
+--
+-- Name: university_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: olegpolivin
+--
+
+ALTER SEQUENCE public.university_id_seq OWNED BY public.university.id;
+
+
+--
+-- Name: course id; Type: DEFAULT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.course ALTER COLUMN id SET DEFAULT nextval('public.course_id_seq'::regclass);
+
+
+--
+-- Name: domain id; Type: DEFAULT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.domain ALTER COLUMN id SET DEFAULT nextval('public.domain_id_seq'::regclass);
+
+
+--
+-- Name: platform id; Type: DEFAULT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.platform ALTER COLUMN id SET DEFAULT nextval('public.platform_id_seq'::regclass);
+
+
+--
+-- Name: university id; Type: DEFAULT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.university ALTER COLUMN id SET DEFAULT nextval('public.university_id_seq'::regclass);
+
+
+--
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: olegpolivin
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+ed543639f691
+\.
+
+
+--
+-- Data for Name: course; Type: TABLE DATA; Schema: public; Owner: olegpolivin
+--
+
+COPY public.course (id, website, price_per_month, duration_months, university_id, course_name, domain_id, platform_id) FROM stdin;
+1	https://www.coursera.org/specializations/algorithms	0	4	1	Algorithms	1	1
+2	http://cs231n.stanford.edu	0	3	1	Convolutional Neural Networks for Visual Recognition	2	4
+3	https://www.coursera.org/specializations/deep-learning	41	4	2	Deep Learning Specialization	2	1
+\.
+
+
+--
+-- Data for Name: domain; Type: TABLE DATA; Schema: public; Owner: olegpolivin
+--
+
+COPY public.domain (id, domain_name) FROM stdin;
+1	Computer Science
+2	Machine Learning
+\.
+
+
+--
+-- Data for Name: platform; Type: TABLE DATA; Schema: public; Owner: olegpolivin
+--
+
+COPY public.platform (id, platform_name) FROM stdin;
+1	Coursera
+2	Udacity
+3	Udemy
+4	Other
+\.
+
+
+--
+-- Data for Name: university; Type: TABLE DATA; Schema: public; Owner: olegpolivin
+--
+
+COPY public.university (id, university_name) FROM stdin;
+1	Stanford University
+2	deeplearning.ai
+\.
+
+
+--
+-- Name: course_id_seq; Type: SEQUENCE SET; Schema: public; Owner: olegpolivin
+--
+
+SELECT pg_catalog.setval('public.course_id_seq', 3, true);
+
+
+--
+-- Name: domain_id_seq; Type: SEQUENCE SET; Schema: public; Owner: olegpolivin
+--
+
+SELECT pg_catalog.setval('public.domain_id_seq', 2, true);
+
+
+--
+-- Name: platform_id_seq; Type: SEQUENCE SET; Schema: public; Owner: olegpolivin
+--
+
+SELECT pg_catalog.setval('public.platform_id_seq', 4, true);
+
+
+--
+-- Name: university_id_seq; Type: SEQUENCE SET; Schema: public; Owner: olegpolivin
+--
+
+SELECT pg_catalog.setval('public.university_id_seq', 2, true);
+
+
+--
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.alembic_version
+    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
+
+
+--
+-- Name: course course_pkey; Type: CONSTRAINT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.course
+    ADD CONSTRAINT course_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: domain domain_pkey; Type: CONSTRAINT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.domain
+    ADD CONSTRAINT domain_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: platform platform_pkey; Type: CONSTRAINT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.platform
+    ADD CONSTRAINT platform_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: university university_pkey; Type: CONSTRAINT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.university
+    ADD CONSTRAINT university_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: course course_domain_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.course
+    ADD CONSTRAINT course_domain_id_fkey FOREIGN KEY (domain_id) REFERENCES public.domain(id) ON DELETE CASCADE;
+
+
+--
+-- Name: course course_platform_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.course
+    ADD CONSTRAINT course_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES public.platform(id) ON DELETE CASCADE;
+
+
+--
+-- Name: course course_university_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: olegpolivin
+--
+
+ALTER TABLE ONLY public.course
+    ADD CONSTRAINT course_university_id_fkey FOREIGN KEY (university_id) REFERENCES public.university(id) ON DELETE CASCADE;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
