@@ -2,6 +2,7 @@ import json
 from flask import request, _request_ctx_stack, abort
 from functools import wraps
 from jose import jwt
+import os
 from urllib.request import urlopen
 
 AUTH0_DOMAIN = os.environ['AUTH0_DOMAIN']
