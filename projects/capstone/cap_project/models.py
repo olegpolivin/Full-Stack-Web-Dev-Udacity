@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 
 database_name = "EducationOnlineDB"
-database_path = "postgres:///{}".format(database_name)
+database_path = "postgres://{}/{}".format('localhost:5432', database_name)
 
 db = SQLAlchemy()
 
