@@ -21,7 +21,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: alembic_version; Type: TABLE; Schema: public; Owner: olegpolivin
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: prcupmwbpkaota
 --
 
 CREATE TABLE public.alembic_version (
@@ -29,10 +29,10 @@ CREATE TABLE public.alembic_version (
 );
 
 
-ALTER TABLE public.alembic_version OWNER TO olegpolivin;
+ALTER TABLE public.alembic_version OWNER TO prcupmwbpkaota;
 
 --
--- Name: course; Type: TABLE; Schema: public; Owner: olegpolivin
+-- Name: course; Type: TABLE; Schema: public; Owner: prcupmwbpkaota
 --
 
 CREATE TABLE public.course (
@@ -46,10 +46,10 @@ CREATE TABLE public.course (
 );
 
 
-ALTER TABLE public.course OWNER TO olegpolivin;
+ALTER TABLE public.course OWNER TO prcupmwbpkaota;
 
 --
--- Name: course_id_seq; Type: SEQUENCE; Schema: public; Owner: olegpolivin
+-- Name: course_id_seq; Type: SEQUENCE; Schema: public; Owner: prcupmwbpkaota
 --
 
 CREATE SEQUENCE public.course_id_seq
@@ -61,17 +61,17 @@ CREATE SEQUENCE public.course_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.course_id_seq OWNER TO olegpolivin;
+ALTER TABLE public.course_id_seq OWNER TO prcupmwbpkaota;
 
 --
--- Name: course_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: olegpolivin
+-- Name: course_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER SEQUENCE public.course_id_seq OWNED BY public.course.id;
 
 
 --
--- Name: domain; Type: TABLE; Schema: public; Owner: olegpolivin
+-- Name: domain; Type: TABLE; Schema: public; Owner: prcupmwbpkaota
 --
 
 CREATE TABLE public.domain (
@@ -80,10 +80,10 @@ CREATE TABLE public.domain (
 );
 
 
-ALTER TABLE public.domain OWNER TO olegpolivin;
+ALTER TABLE public.domain OWNER TO prcupmwbpkaota;
 
 --
--- Name: domain_id_seq; Type: SEQUENCE; Schema: public; Owner: olegpolivin
+-- Name: domain_id_seq; Type: SEQUENCE; Schema: public; Owner: prcupmwbpkaota
 --
 
 CREATE SEQUENCE public.domain_id_seq
@@ -95,17 +95,17 @@ CREATE SEQUENCE public.domain_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.domain_id_seq OWNER TO olegpolivin;
+ALTER TABLE public.domain_id_seq OWNER TO prcupmwbpkaota;
 
 --
--- Name: domain_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: olegpolivin
+-- Name: domain_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER SEQUENCE public.domain_id_seq OWNED BY public.domain.id;
 
 
 --
--- Name: platform; Type: TABLE; Schema: public; Owner: olegpolivin
+-- Name: platform; Type: TABLE; Schema: public; Owner: prcupmwbpkaota
 --
 
 CREATE TABLE public.platform (
@@ -114,10 +114,10 @@ CREATE TABLE public.platform (
 );
 
 
-ALTER TABLE public.platform OWNER TO olegpolivin;
+ALTER TABLE public.platform OWNER TO prcupmwbpkaota;
 
 --
--- Name: platform_id_seq; Type: SEQUENCE; Schema: public; Owner: olegpolivin
+-- Name: platform_id_seq; Type: SEQUENCE; Schema: public; Owner: prcupmwbpkaota
 --
 
 CREATE SEQUENCE public.platform_id_seq
@@ -129,38 +129,38 @@ CREATE SEQUENCE public.platform_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.platform_id_seq OWNER TO olegpolivin;
+ALTER TABLE public.platform_id_seq OWNER TO prcupmwbpkaota;
 
 --
--- Name: platform_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: olegpolivin
+-- Name: platform_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER SEQUENCE public.platform_id_seq OWNED BY public.platform.id;
 
 
 --
--- Name: course id; Type: DEFAULT; Schema: public; Owner: olegpolivin
+-- Name: course id; Type: DEFAULT; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER TABLE ONLY public.course ALTER COLUMN id SET DEFAULT nextval('public.course_id_seq'::regclass);
 
 
 --
--- Name: domain id; Type: DEFAULT; Schema: public; Owner: olegpolivin
+-- Name: domain id; Type: DEFAULT; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER TABLE ONLY public.domain ALTER COLUMN id SET DEFAULT nextval('public.domain_id_seq'::regclass);
 
 
 --
--- Name: platform id; Type: DEFAULT; Schema: public; Owner: olegpolivin
+-- Name: platform id; Type: DEFAULT; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER TABLE ONLY public.platform ALTER COLUMN id SET DEFAULT nextval('public.platform_id_seq'::regclass);
 
 
 --
--- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: olegpolivin
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: prcupmwbpkaota
 --
 
 COPY public.alembic_version (version_num) FROM stdin;
@@ -169,7 +169,7 @@ COPY public.alembic_version (version_num) FROM stdin;
 
 
 --
--- Data for Name: course; Type: TABLE DATA; Schema: public; Owner: olegpolivin
+-- Data for Name: course; Type: TABLE DATA; Schema: public; Owner: prcupmwbpkaota
 --
 
 COPY public.course (id, website, price_per_month, duration_months, course_name, domain_id, platform_id) FROM stdin;
@@ -187,7 +187,7 @@ COPY public.course (id, website, price_per_month, duration_months, course_name, 
 
 
 --
--- Data for Name: domain; Type: TABLE DATA; Schema: public; Owner: olegpolivin
+-- Data for Name: domain; Type: TABLE DATA; Schema: public; Owner: prcupmwbpkaota
 --
 
 COPY public.domain (id, domain_name) FROM stdin;
@@ -198,7 +198,7 @@ COPY public.domain (id, domain_name) FROM stdin;
 
 
 --
--- Data for Name: platform; Type: TABLE DATA; Schema: public; Owner: olegpolivin
+-- Data for Name: platform; Type: TABLE DATA; Schema: public; Owner: prcupmwbpkaota
 --
 
 COPY public.platform (id, platform_name) FROM stdin;
@@ -210,28 +210,28 @@ COPY public.platform (id, platform_name) FROM stdin;
 
 
 --
--- Name: course_id_seq; Type: SEQUENCE SET; Schema: public; Owner: olegpolivin
+-- Name: course_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prcupmwbpkaota
 --
 
 SELECT pg_catalog.setval('public.course_id_seq', 16, true);
 
 
 --
--- Name: domain_id_seq; Type: SEQUENCE SET; Schema: public; Owner: olegpolivin
+-- Name: domain_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prcupmwbpkaota
 --
 
 SELECT pg_catalog.setval('public.domain_id_seq', 5, true);
 
 
 --
--- Name: platform_id_seq; Type: SEQUENCE SET; Schema: public; Owner: olegpolivin
+-- Name: platform_id_seq; Type: SEQUENCE SET; Schema: public; Owner: prcupmwbpkaota
 --
 
 SELECT pg_catalog.setval('public.platform_id_seq', 4, true);
 
 
 --
--- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: olegpolivin
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER TABLE ONLY public.alembic_version
@@ -239,7 +239,7 @@ ALTER TABLE ONLY public.alembic_version
 
 
 --
--- Name: course course_pkey; Type: CONSTRAINT; Schema: public; Owner: olegpolivin
+-- Name: course course_pkey; Type: CONSTRAINT; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER TABLE ONLY public.course
@@ -247,7 +247,7 @@ ALTER TABLE ONLY public.course
 
 
 --
--- Name: domain domain_pkey; Type: CONSTRAINT; Schema: public; Owner: olegpolivin
+-- Name: domain domain_pkey; Type: CONSTRAINT; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER TABLE ONLY public.domain
@@ -255,7 +255,7 @@ ALTER TABLE ONLY public.domain
 
 
 --
--- Name: platform platform_pkey; Type: CONSTRAINT; Schema: public; Owner: olegpolivin
+-- Name: platform platform_pkey; Type: CONSTRAINT; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER TABLE ONLY public.platform
@@ -263,7 +263,7 @@ ALTER TABLE ONLY public.platform
 
 
 --
--- Name: course course_domain_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: olegpolivin
+-- Name: course course_domain_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER TABLE ONLY public.course
@@ -271,7 +271,7 @@ ALTER TABLE ONLY public.course
 
 
 --
--- Name: course course_platform_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: olegpolivin
+-- Name: course course_platform_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: prcupmwbpkaota
 --
 
 ALTER TABLE ONLY public.course
