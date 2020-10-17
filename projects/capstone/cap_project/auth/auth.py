@@ -5,9 +5,17 @@ from jose import jwt
 import os
 from urllib.request import urlopen
 
-AUTH0_DOMAIN = os.environ['AUTH0_DOMAIN']
-ALGORITHMS = os.environ['ALGORITHMS']
-API_AUDIENCE = os.environ['API_AUDIENCE']
+# AUTH0_DOMAIN = os.environ['AUTH0_DOMAIN']
+# ALGORITHMS = os.environ['ALGORITHMS']
+# API_AUDIENCE = os.environ['API_AUDIENCE']
+
+AUTH0_DOMAIN = 'onlineeducation.eu.auth0.com'
+ALGORITHMS = 'RS256'
+API_AUDIENCE = 'CourseAndDomain'
+
+# Get tokens from here
+# https://onlineeducation.eu.auth0.com/authorize?audience=CourseAndDomain&response_type=token&client_id=tEepmn5J6Lm2jIjNDQ2Mm15GNh9sG5x0&redirect_uri=http://0.0.0.0:8080
+
 
 ## AuthError Exception
 '''
@@ -33,7 +41,6 @@ def get_token_auth_header():
     
     auth_header = request.headers['Authorization']
     header_parts = auth_header.split(' ')
-
     if len(header_parts) != 2:
         raise AuthError('Please use bearer authorization token', 401)
     elif header_parts[0].lower() != 'bearer':
