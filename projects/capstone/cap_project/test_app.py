@@ -105,7 +105,7 @@ class OnlineEducationTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
 
         res = self.client().delete('/courses/'+str(id_to_delete),
-                                    headers={'Authorization': ENV_admin_token})
+                                   headers={'Authorization': ENV_admin_token})
         data = json.loads(res.data)
         deleted_course = Course.query.filter_by(id=id_to_delete).one_or_none()
 
@@ -116,7 +116,7 @@ class OnlineEducationTestCase(unittest.TestCase):
     def test_delete_courses_without_enough_permissions(self):
 
         res = self.client().delete('/courses/'+str(1),
-                                    headers={'Authorization': ENV_platform_token})
+                                   headers={'Authorization': ENV_platform_token})
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 401)
         self.assertFalse(data['success'])
@@ -177,17 +177,17 @@ class OnlineEducationTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
 
         res = self.client().delete('/domains/'+str(id_to_delete),
-                                    headers={'Authorization': ENV_admin_token})
+                                   headers={'Authorization': ENV_admin_token})
         data = json.loads(res.data)
         deleted_domain = Domain.query.filter_by(id=id_to_delete).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['success'])
         self.assertIsNone(deleted_domain)
-    
+
     def test_delete_domain_without_sufficient_permissions(self):
         res = self.client().delete('/domains/1',
-                                    headers={'Authorization': ENV_student_token})
+                                   headers={'Authorization': ENV_student_token})
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 401)
         self.assertFalse(data['success'])
@@ -226,7 +226,7 @@ class OnlineEducationTestCase(unittest.TestCase):
 
         # Finally delete the patched id
         res = self.client().delete('/domains/'+str(id_to_patch),
-                                    headers={'Authorization': ENV_admin_token})
+                                   headers={'Authorization': ENV_admin_token})
         data = json.loads(res.data)
         deleted_domain = Domain.query.filter_by(id=id_to_patch).one_or_none()
 
@@ -237,8 +237,8 @@ class OnlineEducationTestCase(unittest.TestCase):
     def test_patch_with_insufficient_permissions(self):
         new_domain_name = 'Babaka'
         res = self.client().patch('/domains/1',
-                                headers={'Authorization': ENV_student_token},
-                                json={'domain_name': new_domain_name})
+                                  headers={'Authorization': ENV_student_token},
+                                  json={'domain_name': new_domain_name})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
@@ -248,9 +248,9 @@ class OnlineEducationTestCase(unittest.TestCase):
     def test_404_patching_non_existant_domain(self):
         new_domain_name = 'Babaka'
         res = self.client().patch('/domains/20',
-                                headers={'Authorization': ENV_admin_token},
-                                json={'domain_name': new_domain_name})
-        
+                                  headers={'Authorization': ENV_admin_token},
+                                  json={'domain_name': new_domain_name})
+
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -260,13 +260,14 @@ class OnlineEducationTestCase(unittest.TestCase):
     def test_422_patching_but_incorrect_request(self):
         new_domain_name = 'Babaka'
         res = self.client().patch('/domains/1',
-                                headers={'Authorization': ENV_admin_token},
-                                json={'here_is_the_error': new_domain_name})
+                                  headers={'Authorization': ENV_admin_token},
+                                  json={'here_is_the_error': new_domain_name})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
         self.assertFalse(data['success'])
         self.assertEqual(data['message'], "The request was well-formed but was unable to be followed due to semantic errors.")
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

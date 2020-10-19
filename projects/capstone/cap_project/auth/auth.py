@@ -17,17 +17,20 @@ API_AUDIENCE = 'CourseAndDomain'
 # https://onlineeducation.eu.auth0.com/authorize?audience=CourseAndDomain&response_type=token&client_id=tEepmn5J6Lm2jIjNDQ2Mm15GNh9sG5x0&redirect_uri=http://0.0.0.0:8080
 
 
-## AuthError Exception
+# AuthError Exception
 '''
 AuthError Exception
 A standardized way to communicate auth failure modes
 '''
+
+
 class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
         self.status_code = status_code
 
-## Auth Header
+
+# Auth Header
 '''
     atempts to get the header from the request
     raises an AuthError if no header is present
@@ -35,10 +38,12 @@ class AuthError(Exception):
     raises an AuthError if the header is malformed
     returns the token part of the header
 '''
+
+
 def get_token_auth_header():
     if 'Authorization' not in request.headers:
         raise AuthError('No authorization header', 401)
-    
+
     auth_header = request.headers['Authorization']
     header_parts = auth_header.split(' ')
     if len(header_parts) != 2:
@@ -46,6 +51,7 @@ def get_token_auth_header():
     elif header_parts[0].lower() != 'bearer':
         raise AuthError('Please use bearer authorization token', 401)
     return header_parts[1]
+
 
 '''
     @INPUTS
@@ -56,10 +62,13 @@ def get_token_auth_header():
     it should raise an AuthError if the requested permission string is not in the payload permissions array
     return true otherwise
 '''
+
+
 def check_permissions(permission, payload):
     if permission not in payload['permissions']:
         raise AuthError('You do not have the permission to perform that action', 401)
     return True
+
 
 '''
 verify_decode_jwt(token) method
@@ -73,13 +82,15 @@ verify_decode_jwt(token) method
 
     !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
 '''
+
+
 def verify_decode_jwt(token):
     # Using the boilerplate from the lesson
 
     # get the public key from auth0
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
-    
+
     # get the data in the header
     unverified_header = jwt.get_unverified_header(token)
 
@@ -88,8 +99,7 @@ def verify_decode_jwt(token):
     if 'kid' not in unverified_header:
         raise AuthError({
             'code': 'invalid_header',
-            'description': 'Authorization malformed.'
-    }, 401)
+            'description': 'Authorization malformed.'}, 401)
 
     for key in jwks['keys']:
         if key['kid'] == unverified_header['kid']:
@@ -134,6 +144,7 @@ def verify_decode_jwt(token):
                 'description': 'Unable to find the appropriate key.'
             }, 400)
 
+
 '''
 @requires_auth(permission) decorator method
     @INPUTS
@@ -144,6 +155,8 @@ def verify_decode_jwt(token):
     it should use the check_permissions method validate claims and check the requested permission
     return the decorator which passes the decoded payload to the decorated method
 '''
+
+
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
